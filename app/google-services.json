@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1029809176907",
+    "firebase_url": "https://addressirtestproject.firebaseio.com",
+    "project_id": "addressirtestproject",
+    "storage_bucket": "addressirtestproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1029809176907:android:8da2c73f5eaa0c548268ce",
+        "android_client_info": {
+          "package_name": "com.avalinejad.addressirtest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1029809176907-t9e9q54sr7nqfla3e21c64feugev8l07.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.avalinejad.addressirtest",
+            "certificate_hash": "6186b4726db527e16ac07ffeed344199f9ee6b28"
+          }
+        },
+        {
+          "client_id": "1029809176907-41q5krnp9stib1uevods604g0bkmhpf3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2CIpfRf8g9YjqRm_vvXYy3p0drRhDyRo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1029809176907-41q5krnp9stib1uevods604g0bkmhpf3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
