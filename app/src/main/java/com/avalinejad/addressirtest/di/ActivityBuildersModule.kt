@@ -1,6 +1,6 @@
 package com.avalinejad.addressirtest.di
 
-import com.avalinejad.addressirtest.MainActivity
+import com.avalinejad.addressirtest.ui.home.HomeActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -8,5 +8,5 @@ import dagger.android.ContributesAndroidInjector
 abstract class ActivityBuildersModule {
     @PerActivity
     @ContributesAndroidInjector
-    internal abstract fun conributeChooserActivity(): MainActivity
+    internal abstract fun conributeChooserActivity(): HomeActivity
 }

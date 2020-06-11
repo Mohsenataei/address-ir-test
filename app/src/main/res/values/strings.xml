@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">AddressIrTest</string>
+    <string name="toolbar_name">نزدیک ترین ها برای تست اندروید</string>
+    <string name="all">همه</string>
+    <string name="highways">بزرگراه ها</string>
+    <string name="bus_stops">ایستگاه اتوبوس</string>
+    <string name="metro_stations">ایستگاه مترو</string>
+    <string name="restaurants">رستوران ها</string>
+    <string name="parks">پارک ها</string>
+    <string name="cafes">گافی شاپ ها</string>
+    <string name="shopping_malls">مراکز خرید</string>
+    <string name="mosques">مساجد</string>
+    <string name="pharmacies">داروخانه ها</string>
+    <string name="hospitals">بیمارستان ها</string>
+    <string name="schools">مدارس</string>
+    <string name="gyms">باشگاه ها</string>
+    <string name="bookstores">کتاب فروشی ها</string>
+    <string name="flower_shops">گل فروشی ها</string>
+    <string name="libraries">کتابخانه ها</string>
+    <string name="hotels">هتل ها</string>
+    <string name="parkings">پارکینگ ها</string>
 </resources>
