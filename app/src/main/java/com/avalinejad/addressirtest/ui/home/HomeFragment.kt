@@ -10,14 +10,18 @@ import androidx.lifecycle.ViewModelProviders
 import com.avalinejad.addressirtest.R
 import com.avalinejad.addressirtest.extentions.*
 import com.avalinejad.addressirtest.ui.base.BaseFragment
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_home.*
 
-class HomeFragment : BaseFragment() {
+class HomeFragment : BaseFragment(), OnMapReadyCallback {
     private val viewModel by lazy {
         ViewModelProviders.of(requireActivity(), viewModelFactory).get(HomeViewModel::class.java)
     }
+
+    private lateinit var googleMap: GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +47,12 @@ class HomeFragment : BaseFragment() {
         }
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        map_view.onCreate(savedInstanceState)
+        onResume()
+        map_view.getMapAsync(this)
+    }
     private fun TabLayout.addTabs(){
         addTab(newTab().setText(R.string.highways))
         addTab(newTab().setText(R.string.bus_stops))
@@ -63,5 +73,11 @@ class HomeFragment : BaseFragment() {
         addTab(newTab().setText(R.string.parkings))
         addTab(newTab().setText(R.string.all),true)
 
+    }
+
+    override fun onMapReady(map: GoogleMap?) {
+        map?.let {
+            googleMap = it
+        }
     }
 }

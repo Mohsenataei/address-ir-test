@@ -5,19 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".ui.home.HomeActivity">
+    tools:context=".MapsActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
-        android:elevation="@dimen/space_8"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/transparent"
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay"
-        app:elevation="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:elevation="0dp">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsingToolbar"
@@ -39,22 +36,21 @@
                 android:fitsSystemWindows="true"
                 android:visibility="gone"
                 app:srcCompat="@drawable/appbar_bg" />
-
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?actionBarSize"
-                android:layout_gravity="top"
-                app:contentInsetStartWithNavigation="0dp"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:titleTextAppearance="@style/TitleBarTextAppearance" />
+<!--            <androidx.appcompat.widget.Toolbar-->
+<!--                android:id="@+id/toolbar"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="?actionBarSize"-->
+<!--                android:layout_gravity="top"-->
+<!--                app:title="@string/toolbar_name"-->
+<!--                app:contentInsetStartWithNavigation="0dp"-->
+<!--                app:layout_collapseMode="pin"-->
+<!--                app:popupTheme="@style/AppTheme.PopupOverlay"-->
+<!--                app:titleTextAppearance="@style/TitleBarTextAppearance" />-->
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
         <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab"
+            android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_gravity="bottom"
@@ -70,12 +66,17 @@
             app:tabRippleColor="@null"
             app:tabSelectedTextColor="@color/tab"
             app:tabTextColor="@color/tab" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.google.android.gms.maps.MapView
-        android:layout_marginTop="120dp"
-        android:id="@+id/map_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    <!--    <androidx.viewpager2.widget.ViewPager2-->
 
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:fillViewport="true"
+        android:layoutDirection="locale"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
