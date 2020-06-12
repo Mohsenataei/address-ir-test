@@ -1,10 +1,20 @@
 package com.avalinejad.addressirtest
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBar
+import androidx.lifecycle.Observer
+import com.avalinejad.addressirtest.bottomSheetDialog.DetailsBottomSheetDialogFragment
+import com.avalinejad.addressirtest.bus.EventBus
+import com.avalinejad.addressirtest.data.model.Detail
+import com.avalinejad.addressirtest.data.model.Response
+import com.avalinejad.addressirtest.di.DaggerViewModelFactory
 import com.avalinejad.addressirtest.extentions.initCollapsingToolbar
 import com.avalinejad.addressirtest.extentions.initToolbar
+import com.avalinejad.addressirtest.ui.home.HomeViewModel
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -13,26 +23,79 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.tabs.TabLayout
+import dagger.android.AndroidInjection
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import kotlinx.android.synthetic.main.activity_maps.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import javax.inject.Inject
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, HasAndroidInjector {
 
     private lateinit var mMap: GoogleMap
 
+    @Inject
+    lateinit var viewModelFactory: DaggerViewModelFactory
+
+    @Inject
+    lateinit var androidInjector: DispatchingAndroidInjector<Any?>
+    override fun androidInjector(): AndroidInjector<Any?>? = androidInjector
+
+    @Inject
+    lateinit var eventBus: EventBus
+
+    private val viewModel by viewModels<HomeViewModel> { viewModelFactory }
+
+    private lateinit var coordinates: Response
+
+
+    @SuppressLint("LogNotTimber")
+    @ExperimentalCoroutinesApi
+    @FlowPreview
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AndroidInjection.inject(this)
         setContentView(R.layout.activity_maps)
-//        supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM;
-//        supportActionBar?.setCustomView(R.layout.custom_toolbarr)
-//        toolbar.initToolbar()
-//        collapsingToolbar.initCollapsingToolbar(toolbar)
-//
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        val lat =  35.7247396
+        val lon =  51.4217074
+        viewModel.loadData(lat,lon)
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-//        toolbar.title = getString(R.string.toolbar_name)
         tabs.addTabs()
+        var response: Response? = null
+
+        viewModel.coordinates.observe(this, Observer {
+            response = it
+            Log.d("mapResponse","$it")
+        })
+        tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                when (tab?.position) {
+                    0 -> {
+                        val dialog = DetailsBottomSheetDialogFragment(response?.bookstores as MutableList<Detail>)
+                        dialog.show(supportFragmentManager, "")
+                    }
+                }
+
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+            }
+
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                when (tab?.position) {
+                    0 -> {
+                        val dialog = DetailsBottomSheetDialogFragment(response?.hotels as MutableList<Detail>)
+                        dialog.show(supportFragmentManager, "")
+                    }
+                }
+            }
+
+        })
     }
 
     /**
@@ -53,7 +116,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
 
-    private fun TabLayout.addTabs(){
+    private fun TabLayout.addTabs() {
         addTab(newTab().setText(R.string.highways))
         addTab(newTab().setText(R.string.bus_stops))
         addTab(newTab().setText(R.string.metro_stations))
@@ -71,7 +134,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         addTab(newTab().setText(R.string.libraries))
         addTab(newTab().setText(R.string.hotels))
         addTab(newTab().setText(R.string.parkings))
-        addTab(newTab().setText(R.string.all),true)
+        addTab(newTab().setText(R.string.all), true)
 
     }
 }
