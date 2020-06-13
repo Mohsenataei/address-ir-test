@@ -28,6 +28,17 @@ android {
         }
     }
 
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def project = "Address.IrTest"
+            def SEP = "_"
+            def buildType = variant.variantData.variantConfiguration.buildType.name
+            def version = "v" + variant.versionName
+            def newApkName = project + SEP  + SEP + version + SEP + buildType + ".apk"
+            outputFileName = new File(newApkName)
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
