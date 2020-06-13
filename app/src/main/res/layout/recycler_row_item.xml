@@ -19,7 +19,6 @@
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_park"
             android:layout_margin="@dimen/space_1"
             android:padding="@dimen/space_2"
             android:scaleType="fitCenter" />

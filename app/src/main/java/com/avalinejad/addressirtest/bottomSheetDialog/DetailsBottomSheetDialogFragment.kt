@@ -39,14 +39,14 @@ class DetailsBottomSheetDialogFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 //        image.background = requireContext().getDrawable(resId)
-        image.setBackgroundResource(resId)
+//        image.setBackgroundResource(resId)
         Log.d("bottomsheet",details.toString())
     }
 
     private fun initView(view: View){
         adapter.items = details
         view.place_title.text = title
-//        view.image.background = requireContext().getDrawable(resId)
+        view.place_icon.background = requireContext().getDrawable(resId)
         view.places_count.text = details.size.toString() + title + "پیدا شد"
         view.recyclerView.layoutManager = LinearLayoutManager(context)
         view.recyclerView.adapter = adapter
