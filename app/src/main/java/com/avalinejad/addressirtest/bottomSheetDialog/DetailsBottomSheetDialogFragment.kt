@@ -12,10 +12,14 @@ import com.avalinejad.addressirtest.data.model.Detail
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.details_bottom_sheet_dialog_fragment.*
 import kotlinx.android.synthetic.main.details_bottom_sheet_dialog_fragment.view.*
+import kotlinx.android.synthetic.main.recycler_row_item.*
+import kotlinx.android.synthetic.main.recycler_row_item.view.*
+import kotlinx.android.synthetic.main.recycler_row_item.view.image
 
 class DetailsBottomSheetDialogFragment(
     val details: MutableList<Detail>,
-    val title: String
+    val title: String,
+    val resId: Int
 ) : BottomSheetDialogFragment(){
 
     val adapter : DetailsRecyclerViewAdapter by lazy {
@@ -34,12 +38,15 @@ class DetailsBottomSheetDialogFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+//        image.background = requireContext().getDrawable(resId)
+        image.setBackgroundResource(resId)
         Log.d("bottomsheet",details.toString())
     }
 
     private fun initView(view: View){
         adapter.items = details
         view.place_title.text = title
+//        view.image.background = requireContext().getDrawable(resId)
         view.places_count.text = details.size.toString() + title + "پیدا شد"
         view.recyclerView.layoutManager = LinearLayoutManager(context)
         view.recyclerView.adapter = adapter

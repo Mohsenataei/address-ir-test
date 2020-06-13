@@ -59,9 +59,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, HasAndroidInjector
     lateinit var eventBus: EventBus
 
     private val viewModel by viewModels<HomeViewModel> { viewModelFactory }
-    private var mGoogleApiClient: GoogleApiClient? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var dialog: DetailsBottomSheetDialogFragment
+    private lateinit var response: Response
 
 
     private var mLocationPermissionsGranted = false
@@ -82,146 +82,28 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, HasAndroidInjector
         setContentView(R.layout.activity_maps)
         getLocationPermission()
         tabs.addTabs()
-        var response: Response? = null
         val lat = 35.6892
         val lon = 51.3890
-        viewModel.loadData(lat,lon)
+        viewModel.loadData(lat, lon)
         viewModel.coordinates.observe(this, Observer {
             response = it
             Log.d("mapResponse", "$it")
         })
         tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {
-                when (tab?.position) {
-                    0 -> {
-                        updateMapMarkers(response!!.highways)
-                        val dialog =
-                            DetailsBottomSheetDialogFragment(response?.highways as MutableList<Detail>, getString(R.string.highways))
-                        dialog.show(supportFragmentManager, "")
-                    }
-                }
-
+                handleTabSelection(tab)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
-
             }
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                when (tab?.position) {
-                    0 -> {
-                        updateMapMarkers(response!!.highways)
-                         dialog =
-                            DetailsBottomSheetDialogFragment(response?.highways as MutableList<Detail>,getString(R.string.highways))
-                        dialog.show(supportFragmentManager, "")
-                    }
-                    1->{
-                        updateMapMarkers(response!!.busStops)
-                        dialog =
-                            DetailsBottomSheetDialogFragment(response?.busStops as MutableList<Detail>,getString(R.string.bus_stops))
-                        dialog.show(supportFragmentManager, "")
-                    }
-                    2->{
-                        updateMapMarkers(response!!.metroStations)
-                        dialog =
-                            DetailsBottomSheetDialogFragment(response?.metroStations as MutableList<Detail>,getString(R.string.metro_stations))
-                        dialog.show(supportFragmentManager, "")
-                    }
-                    3->{
-                        updateMapMarkers(response!!.restaurants)
-                        dialog =
-                            DetailsBottomSheetDialogFragment(response?.restaurants as MutableList<Detail>,getString(R.string.restaurants))
-                        dialog.show(supportFragmentManager, "")
-                    }
-                    4->{
-                        updateMapMarkers(response!!.parks)
-                        dialog =
-                            DetailsBottomSheetDialogFragment(response?.parks as MutableList<Detail>,getString(R.string.parks))
-                        dialog.show(supportFragmentManager, "")
-                    }
-                    5->{
-                        updateMapMarkers(response!!.cafes)
-                        dialog =
-                            DetailsBottomSheetDialogFragment(response?.cafes as MutableList<Detail>,getString(R.string.cafes))
-                        dialog.show(supportFragmentManager, "")
-                    }
-                    6->{
-                        updateMapMarkers(response!!.shoppingMalls)
-                        dialog =
-                            DetailsBottomSheetDialogFragment(response?.shoppingMalls as MutableList<Detail>,getString(R.string.shopping_malls))
-                        dialog.show(supportFragmentManager, "")
-                    }
-                    7->{
-                        updateMapMarkers(response!!.mosques)
-                        dialog =
-                            DetailsBottomSheetDialogFragment(response?.mosques as MutableList<Detail>,getString(R.string.mosques))
-                        dialog.show(supportFragmentManager, "")
-                    }
-                    8->{
-                        updateMapMarkers(response!!.pharmacies)
-                        dialog =
-                            DetailsBottomSheetDialogFragment(response?.pharmacies as MutableList<Detail>,getString(R.string.pharmacies))
-                        dialog.show(supportFragmentManager, "")
-                    }
-                    9->{
-                        updateMapMarkers(response!!.hospitals)
-                        dialog =
-                            DetailsBottomSheetDialogFragment(response?.hospitals as MutableList<Detail>,getString(R.string.hospitals))
-                        dialog.show(supportFragmentManager, "")
-                    }
-                    10->{
-                        updateMapMarkers(response!!.schools)
-                        dialog =
-                            DetailsBottomSheetDialogFragment(response?.schools as MutableList<Detail>,getString(R.string.schools))
-                        dialog.show(supportFragmentManager, "")
-                    }
-                    11->{
-                        updateMapMarkers(response!!.gyms)
-                        dialog =
-                            DetailsBottomSheetDialogFragment(response?.gyms as MutableList<Detail>,getString(R.string.gyms))
-                        dialog.show(supportFragmentManager, "")
-                    }
-                    12->{
-                        updateMapMarkers(response!!.bookstores)
-                        dialog =
-                            DetailsBottomSheetDialogFragment(response?.bookstores as MutableList<Detail>,getString(R.string.bookstores))
-                        dialog.show(supportFragmentManager, "")
-                    }
-                    13->{
-                        updateMapMarkers(response!!.flowerShops)
-                        dialog =
-                            DetailsBottomSheetDialogFragment(response?.flowerShops as MutableList<Detail>,getString(R.string.flower_shops))
-                        dialog.show(supportFragmentManager, "")
-                    }
-                    14->{
-                        updateMapMarkers(response!!.libraries)
-                        dialog =
-                            DetailsBottomSheetDialogFragment(response?.libraries as MutableList<Detail>,getString(R.string.libraries))
-                        dialog.show(supportFragmentManager, "")
-                    }
-                    15->{
-                        updateMapMarkers(response!!.hotels)
-                        dialog =
-                            DetailsBottomSheetDialogFragment(response?.hotels as MutableList<Detail>,getString(R.string.hotels))
-                        dialog.show(supportFragmentManager, "")
-                    }
-                    16->{
-                        updateMapMarkers(response!!.parkings)
-                        dialog =
-                            DetailsBottomSheetDialogFragment(response?.parkings as MutableList<Detail>,getString(R.string.parkings))
-                        dialog.show(supportFragmentManager, "")
-                    }
-                    17->{
-                        updateMapMarkers(response!!.highways)
-                        dialog =
-                            DetailsBottomSheetDialogFragment(response?.highways as MutableList<Detail>,getString(R.string.highways))
-                        dialog.show(supportFragmentManager, "")
-                    }
-                }
+                handleTabSelection(tab)
             }
 
         })
     }
+
     @FlowPreview
     @ExperimentalCoroutinesApi
     override fun onMapReady(googleMap: GoogleMap) {
@@ -240,7 +122,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, HasAndroidInjector
             ) {
                 return
             }
-            moveCamera(LatLng(35.6892,51.3890),DEFAULT_ZOOM)
+            moveCamera(LatLng(35.6892, 51.3890), DEFAULT_ZOOM)
             mMap.isMyLocationEnabled = true
         }
 
@@ -324,12 +206,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, HasAndroidInjector
                 location.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val currentLocation = task.result
-                        Log.d(TAG,"lat is ${currentLocation!!.latitude} and lon is ${currentLocation.longitude}")
+                        Log.d(
+                            TAG,
+                            "lat is ${currentLocation!!.latitude} and lon is ${currentLocation.longitude}"
+                        )
                         moveCamera(
                             LatLng(currentLocation!!.latitude, currentLocation.longitude),
                             DEFAULT_ZOOM
                         )
-                        viewModel.loadData(currentLocation.latitude,currentLocation.longitude)
+                        viewModel.loadData(currentLocation.latitude, currentLocation.longitude)
                     }
                 }
             }
@@ -356,11 +241,203 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, HasAndroidInjector
 
     }
 
-    private fun updateMapMarkers(details: List<Detail>){
+    private fun updateMapMarkers(details: List<Detail>) {
         mMap.clear()
-        details.forEach {detail->
-            mMap.addMarker(MarkerOptions().position(LatLng(detail.lat.toDouble(),detail.lng.toDouble())).title(detail.title))
+        details.forEach { detail ->
+            mMap.addMarker(
+                MarkerOptions().position(
+                    LatLng(
+                        detail.lat.toDouble(),
+                        detail.lng.toDouble()
+                    )
+                ).title(detail.title)
+            )
             mMap.animateCamera(CameraUpdateFactory.zoomTo(15f))
+        }
+    }
+
+    private fun handleTabSelection(tab: TabLayout.Tab?) {
+        when (tab?.position) {
+            0 -> {
+                updateMapMarkers(response!!.highways)
+                dialog =
+                    DetailsBottomSheetDialogFragment(
+                        response?.highways as MutableList<Detail>,
+                        getString(R.string.highways),
+                        R.drawable.ic_highway
+                    )
+                dialog.show(supportFragmentManager, "")
+            }
+            1 -> {
+                updateMapMarkers(response!!.busStops)
+                dialog =
+                    DetailsBottomSheetDialogFragment(
+                        response?.busStops as MutableList<Detail>,
+                        getString(R.string.bus_stops),
+                        R.drawable.ic_bus
+                    )
+                dialog.show(supportFragmentManager, "")
+            }
+            2 -> {
+                updateMapMarkers(response!!.metroStations)
+                dialog =
+                    DetailsBottomSheetDialogFragment(
+                        response?.metroStations as MutableList<Detail>,
+                        getString(R.string.metro_stations),
+                        R.drawable.ic_train_station
+                    )
+                dialog.show(supportFragmentManager, "")
+            }
+            3 -> {
+                updateMapMarkers(response!!.restaurants)
+                dialog =
+                    DetailsBottomSheetDialogFragment(
+                        response?.restaurants as MutableList<Detail>,
+                        getString(R.string.restaurants),
+                        R.drawable.ic_restaurant
+                    )
+                dialog.show(supportFragmentManager, "")
+            }
+            4 -> {
+                updateMapMarkers(response!!.parks)
+                dialog =
+                    DetailsBottomSheetDialogFragment(
+                        response?.parks as MutableList<Detail>,
+                        getString(R.string.parks),
+                        R.drawable.ic_park
+                    )
+                dialog.show(supportFragmentManager, "")
+            }
+            5 -> {
+                updateMapMarkers(response!!.cafes)
+                dialog =
+                    DetailsBottomSheetDialogFragment(
+                        response?.cafes as MutableList<Detail>,
+                        getString(R.string.cafes),
+                        R.drawable.ic_cafe
+                    )
+                dialog.show(supportFragmentManager, "")
+            }
+            6 -> {
+                updateMapMarkers(response!!.shoppingMalls)
+                dialog =
+                    DetailsBottomSheetDialogFragment(
+                        response?.shoppingMalls as MutableList<Detail>,
+                        getString(R.string.shopping_malls),
+                        R.drawable.ic_mall
+                    )
+                dialog.show(supportFragmentManager, "")
+            }
+            7 -> {
+                updateMapMarkers(response!!.mosques)
+                dialog =
+                    DetailsBottomSheetDialogFragment(
+                        response?.mosques as MutableList<Detail>,
+                        getString(R.string.mosques),
+                        R.drawable.ic_mosque
+                    )
+                dialog.show(supportFragmentManager, "")
+            }
+            8 -> {
+                updateMapMarkers(response!!.pharmacies)
+                dialog =
+                    DetailsBottomSheetDialogFragment(
+                        response?.pharmacies as MutableList<Detail>,
+                        getString(R.string.pharmacies),
+                        R.drawable.ic_pharmacy
+                    )
+                dialog.show(supportFragmentManager, "")
+            }
+            9 -> {
+                updateMapMarkers(response!!.hospitals)
+                dialog =
+                    DetailsBottomSheetDialogFragment(
+                        response?.hospitals as MutableList<Detail>,
+                        getString(R.string.hospitals),
+                        R.drawable.ic_hospital
+                    )
+                dialog.show(supportFragmentManager, "")
+            }
+            10 -> {
+                updateMapMarkers(response!!.schools)
+                dialog =
+                    DetailsBottomSheetDialogFragment(
+                        response?.schools as MutableList<Detail>,
+                        getString(R.string.schools),
+                        R.drawable.ic_school
+                    )
+                dialog.show(supportFragmentManager, "")
+            }
+            11 -> {
+                updateMapMarkers(response!!.gyms)
+                dialog =
+                    DetailsBottomSheetDialogFragment(
+                        response?.gyms as MutableList<Detail>,
+                        getString(R.string.gyms),
+                        R.drawable.ic_gym
+                    )
+                dialog.show(supportFragmentManager, "")
+            }
+            12 -> {
+                updateMapMarkers(response!!.bookstores)
+                dialog =
+                    DetailsBottomSheetDialogFragment(
+                        response?.bookstores as MutableList<Detail>,
+                        getString(R.string.bookstores),
+                        R.drawable.ic_book_store
+                    )
+                dialog.show(supportFragmentManager, "")
+            }
+            13 -> {
+                updateMapMarkers(response!!.flowerShops)
+                dialog =
+                    DetailsBottomSheetDialogFragment(
+                        response?.flowerShops as MutableList<Detail>,
+                        getString(R.string.flower_shops),
+                        R.drawable.ic_flower
+                    )
+                dialog.show(supportFragmentManager, "")
+            }
+            14 -> {
+                updateMapMarkers(response!!.libraries)
+                dialog =
+                    DetailsBottomSheetDialogFragment(
+                        response?.libraries as MutableList<Detail>,
+                        getString(R.string.libraries),
+                        R.drawable.ic_library
+                    )
+                dialog.show(supportFragmentManager, "")
+            }
+            15 -> {
+                updateMapMarkers(response!!.hotels)
+                dialog =
+                    DetailsBottomSheetDialogFragment(
+                        response?.hotels as MutableList<Detail>,
+                        getString(R.string.hotels),
+                        R.drawable.ic_hotel
+                    )
+                dialog.show(supportFragmentManager, "")
+            }
+            16 -> {
+                updateMapMarkers(response!!.parkings)
+                dialog =
+                    DetailsBottomSheetDialogFragment(
+                        response?.parkings as MutableList<Detail>,
+                        getString(R.string.parkings),
+                        R.drawable.ic_parking
+                    )
+                dialog.show(supportFragmentManager, "")
+            }
+            17 -> {
+                updateMapMarkers(response!!.highways)
+                dialog =
+                    DetailsBottomSheetDialogFragment(
+                        response?.highways as MutableList<Detail>,
+                        getString(R.string.highways),
+                        R.drawable.ic_all
+                    )
+                dialog.show(supportFragmentManager, "")
+            }
         }
     }
 }
